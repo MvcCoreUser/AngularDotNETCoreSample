@@ -17,10 +17,10 @@ namespace SportsStore.WebApi.Controllers
         {
             Product[] products =
                 {
-                    new Product{Name="Kayak", Price=275M, Category="Watersports", Id=1},
-                    new Product{Name="Lifejacket", Price=48.95M, Category="Watersports", Id=2},
-                    new Product{Name="Soccer ball", Price=19.50M, Category="Soccer", Id=3},
-                    new Product{Name="Corner flag",Price=34.95M, Category="Soccer", Id=4}
+                    new Product{Name="Kayak", Price=275M, Category="Watersports", ProductId=1},
+                    new Product{Name="Lifejacket", Price=48.95M, Category="Watersports", ProductId=2},
+                    new Product{Name="Soccer ball", Price=19.50M, Category="Soccer", ProductId=3},
+                    new Product{Name="Corner flag",Price=34.95M, Category="Soccer", ProductId=4}
             };
             return products;
         }
