@@ -8,6 +8,7 @@ import { Component, Inject} from '@angular/core';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
+  title = 'Angular & ASP.NET Core MVC';
   constructor(private repository: RepositoryModel ) {
   }
 
