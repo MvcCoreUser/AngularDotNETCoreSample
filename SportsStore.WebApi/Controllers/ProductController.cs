@@ -12,23 +12,17 @@ namespace SportsStore.WebApi.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        [NonAction]
-        private Product[] ProductArray()
-        {
-            Product[] products =
-                {
-                    new Product{Name="Kayak", Price=275M, Category="Watersports", ProductId=1},
-                    new Product{Name="Lifejacket", Price=48.95M, Category="Watersports", ProductId=2},
-                    new Product{Name="Soccer ball", Price=19.50M, Category="Soccer", ProductId=3},
-                    new Product{Name="Corner flag",Price=34.95M, Category="Soccer", ProductId=4}
-            };
-            return products;
-        }
+        private DataContext context;
 
+        public ProductController(DataContext dataContext)
+        {
+            context = dataContext;
+        }
+       
         [HttpGet("[action]")]
         public IActionResult GetAll()
         {
-            var products = this.ProductArray();
+            var products = context.Products.AsQueryable().ToList();
             return Ok(products);
         }
     }

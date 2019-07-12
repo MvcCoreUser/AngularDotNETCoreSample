@@ -8,7 +8,7 @@ import { isNullOrUndefined } from 'util';
 @Injectable()
 export class RepositoryModel {
   private products: Product[]=new Array<Product>();
-  private locator = (p: Product, id: number)=> p.id == id;
+  private locator = (p: Product, id: number)=> p.productId == id;
   constructor(private dataSource: RestDataSource) {
     //this.products=new Array<Product>();
     //this.dataSource.getData().forEach(p=>this.products.push(p));
@@ -27,7 +27,7 @@ export class RepositoryModel {
     let res: number;
     let index = this.products.findIndex(p=>this.locator(p, id));
     if (index>-1) {
-      res= this.products[this.products.length > index+2?index+1:0].id;
+      res= this.products[this.products.length > index+2?index+1:0].productId;
     }
     else {
       res= id || 0;
@@ -38,19 +38,19 @@ export class RepositoryModel {
   getPrevProductId(id: number):number{
     let index = this.products.findIndex(p=>this.locator(p, id));
     if (index>-1) {
-      return this.products[index>0?index-1:this.products.length-1].id;
+      return this.products[index>0?index-1:this.products.length-1].productId;
     } else {
       return id || 0;
     }
   }
 
   saveProduct(product: Product){
-    if (isNullOrUndefined(product.id) || product.id==0) {
+    if (isNullOrUndefined(product.productId) || product.productId==0) {
       this.dataSource.saveProduct(product).subscribe(p=>this.products.push(p));
     }
     else{
       this.dataSource.updateProduct(product).subscribe(p => {
-        let index = this.products.findIndex(p=>this.locator(p, product.id));
+        let index = this.products.findIndex(p=>this.locator(p, product.productId));
         this.products.splice(index, 1, product);
       });
 

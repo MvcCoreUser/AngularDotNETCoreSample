@@ -28,7 +28,7 @@ export class RestDataSource{
   }
 
   updateProduct(product: Product): Observable<Product>{
-    return this.sendRequest<Product>('PUT',`${this.url}/${product.id}`, product);
+    return this.sendRequest<Product>('PUT',`${this.url}/${product.productId}`, product);
   }
 
   deleteProduct(id: number): Observable<Product>{
