@@ -23,6 +23,10 @@ export class RestDataSource{
     return this.sendRequest<Product[]>('GET', this.url+'product/getall');
   }
 
+  getProductById(id:number):Observable<Product>{
+    return this.sendRequest<Product>('GET', this.url+`product/getbyid/${id}`)
+  }
+
   saveProduct(product: Product):Observable<Product>{
     return this.sendRequest<Product>('POST', this.url, product);
   }

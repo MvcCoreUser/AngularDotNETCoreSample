@@ -8,19 +8,24 @@ import { isNullOrUndefined } from 'util';
 @Injectable()
 export class RepositoryModel {
   private products: Product[]=new Array<Product>();
+  private product: Product=new Product();
   private locator = (p: Product, id: number)=> p.productId == id;
   constructor(private dataSource: RestDataSource) {
     //this.products=new Array<Product>();
     //this.dataSource.getData().forEach(p=>this.products.push(p));
-    this.dataSource.getData().subscribe(data=>this.products = data);
+
+
   }
 
   getProducts(): Product[]{
+    this.dataSource.getData().toPromise().then(data=>this.products = data);
     return this.products;
   }
 
   getProduct(id: number): Product{
-    return this.products.find(p=> this.locator(p, id));
+    this.dataSource.getProductById(id).toPromise()
+                                      .then(data=>this.product=data);
+    return this.product;
   }
 
   getNextProductId(id: number):number{

@@ -25,6 +25,13 @@ namespace SportsStore.WebApi.Controllers
             var products = context.Products.AsQueryable().ToList();
             return Ok(products);
         }
+
+        [HttpGet("[action]/{id}")]
+        public IActionResult GetById([FromRoute]long id)
+        {
+            var product = context.Products.Find(id);
+            return Ok(product);
+        }
     }
 
     

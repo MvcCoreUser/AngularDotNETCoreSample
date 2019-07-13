@@ -1,3 +1,5 @@
+import { Product } from './model/product.model';
+import { RepositoryModel } from './model/repository.model';
 import { Component } from '@angular/core';
 
 @Component({
@@ -7,4 +9,10 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'Client';
+  constructor(private repo: RepositoryModel){
+  }
+
+  get product(): Product{
+    return this.repo.getProduct(1);
+  }
 }

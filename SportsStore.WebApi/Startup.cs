@@ -30,7 +30,15 @@ namespace SportsStore.WebApi
             {
                 options.UseNpgsql(Configuration["Data:Products:ConnectionString"]);
             });
-            services.AddCors();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("default",
+                    builder => builder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                );
+            });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -41,7 +49,8 @@ namespace SportsStore.WebApi
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseCors(builder => builder.WithOrigins(Configuration["ClientUrl"]).AllowAnyMethod().AllowCredentials().AllowAnyHeader());
+            //app.UseCors(builder => builder.WithOrigins(Configuration["ClientUrl"]).AllowAnyMethod().AllowCredentials().AllowAnyHeader());
+            app.UseCors("default");
             app.UseMvcWithDefaultRoute();
             using (var scope = app.ApplicationServices.CreateScope())
             {
