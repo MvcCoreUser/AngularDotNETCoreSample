@@ -8,25 +8,25 @@ using SportsStore.WebApi.Models;
 
 namespace SportsStore.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/products")]
     [ApiController]
-    public class ProductController : ControllerBase
+    public class ProductValuesController : ControllerBase
     {
         private DataContext context;
 
-        public ProductController(DataContext dataContext)
+        public ProductValuesController(DataContext dataContext)
         {
             context = dataContext;
         }
        
-        [HttpGet("[action]")]
+        [HttpGet(template:"")]
         public IActionResult GetAll()
         {
             var products = context.Products.AsQueryable().ToList();
             return Ok(products);
         }
 
-        [HttpGet("[action]/{id}")]
+        [HttpGet("{id}")]
         public IActionResult GetById([FromRoute]long id)
         {
             var product = context.Products.Find(id);
