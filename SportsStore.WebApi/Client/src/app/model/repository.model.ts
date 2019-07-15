@@ -1,8 +1,11 @@
+
 import { RestDataSource } from './rest.datasource';
 // import { StaticDataSource } from './static.datasource';
 import { Product } from './product.model';
 import { Injectable, InjectionToken, Inject } from "@angular/core";
 import { isNullOrUndefined } from 'util';
+import { Observable } from 'rxjs';
+import { HttpRequest } from '@angular/common/http';
 
 export const REST_URL = new InjectionToken('rest_url');
 
@@ -24,11 +27,15 @@ export class RepositoryModel {
   }
 
   getProduct(id: number){
-      this.dataSource.httpClient.get<Product>(`${this.dataSource.url}products/${id}`)
+      this.sendRequest<Product>('GET', `${this.dataSource.url}products/${id}`)
               .subscribe(response=>{
                 this.product=response;
                 console.log('Product data received');
               });
+  }
+
+  private sendRequest<T>(method: string, url: string, data?: any):Observable<T>{
+    return this.dataSource.httpClient.request<T>(method, url, {body: data});
   }
 
   getNextProductId(id: number):number{
