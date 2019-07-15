@@ -1,31 +1,30 @@
 import { RestDataSource } from './rest.datasource';
 // import { StaticDataSource } from './static.datasource';
 import { Product } from './product.model';
-import { Injectable } from "@angular/core";
+import { Injectable, InjectionToken, Inject } from "@angular/core";
 import { isNullOrUndefined } from 'util';
 
+export const REST_URL = new InjectionToken('rest_url');
 
 @Injectable()
 export class RepositoryModel {
   private products: Product[]=new Array<Product>();
-  private product: Product=new Product();
+  product: Product=new Product();
   private locator = (p: Product, id: number)=> p.productId == id;
   constructor(private dataSource: RestDataSource) {
     //this.products=new Array<Product>();
     //this.dataSource.getData().forEach(p=>this.products.push(p));
-
-
+    //this.dataSource.getData().toPromise().then(data=>this.products = data);
+    this.getProduct(1);
   }
 
   getProducts(): Product[]{
-    this.dataSource.getData().toPromise().then(data=>this.products = data);
+
     return this.products;
   }
 
-  getProduct(id: number): Product{
-    this.dataSource.getProductById(id).toPromise()
-                                      .then(data=>this.product=data);
-    return this.product;
+  getProduct(id: number){
+      this.dataSource.httpClient.get<Product>(`${this.dataSource.url}products/${id}`).subscribe(response=>this.product=response);
   }
 
   getNextProductId(id: number):number{

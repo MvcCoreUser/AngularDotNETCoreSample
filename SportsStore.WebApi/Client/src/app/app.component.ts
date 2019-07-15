@@ -13,6 +13,6 @@ export class AppComponent {
   }
 
   get product(): Product{
-    return this.repo.getProduct(1);
+    return this.repo.product;
   }
 }

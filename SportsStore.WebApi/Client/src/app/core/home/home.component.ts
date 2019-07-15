@@ -13,7 +13,7 @@ export class HomeComponent {
   }
 
   getProduct(id:number):Product{
-    return this.repository.getProduct(id);
+    return this.repository.product;
   }
 
 

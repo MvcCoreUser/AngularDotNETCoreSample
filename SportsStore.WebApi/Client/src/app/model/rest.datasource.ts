@@ -12,7 +12,7 @@ export class RestDataSource{
    *
    */
   private myHeaders: HttpHeaders;
-  constructor(private httpClient: HttpClient, @Inject(REST_URL) private url: string) {
+  constructor(public httpClient: HttpClient, @Inject(REST_URL) public url: string) {
     this.myHeaders=new HttpHeaders();
     this.myHeaders=this.myHeaders.set('Access-Key', '<secret>');
     this.myHeaders=this.myHeaders.set('App-Names', ['exampleApp', 'proAngular6']);
@@ -20,11 +20,12 @@ export class RestDataSource{
 
   getData():Observable<Product[]>{
     // return this.httpClient.jsonp<Product[]>(this.url, "callback");
-    return this.sendRequest<Product[]>('GET', this.url+'product/getall');
+    return this.sendRequest<Product[]>('GET', this.url+'products/');
   }
 
   getProductById(id:number):Observable<Product>{
-    return this.sendRequest<Product>('GET', this.url+`product/getbyid/${id}`)
+    //return this.sendRequest<Product>('GET', this.url+`product/getbyid/${id}`)
+    return this.httpClient.jsonp<Product>(this.url+`products/${id}`, "callback");
   }
 
   saveProduct(product: Product):Observable<Product>{
@@ -41,8 +42,7 @@ export class RestDataSource{
 
   private sendRequest<T>(verb: string, url: string, body?:Product):Observable<T>{
       return this.httpClient.request<T>(verb, url, {
-        body: body,
-        headers: this.myHeaders
+        body: body
       })
       //.pipe(delay(2000))
       .pipe( catchError((error: Response)=>throwError(`Network error: ${error.statusText} (${error.status})`)) );
