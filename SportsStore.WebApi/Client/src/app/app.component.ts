@@ -13,6 +13,7 @@ export class AppComponent {
   }
 
   get product(): Product{
+    console.log('Product data requested')
     return this.repo.product;
   }
 }

@@ -24,7 +24,11 @@ export class RepositoryModel {
   }
 
   getProduct(id: number){
-      this.dataSource.httpClient.get<Product>(`${this.dataSource.url}products/${id}`).subscribe(response=>this.product=response);
+      this.dataSource.httpClient.get<Product>(`${this.dataSource.url}products/${id}`)
+              .subscribe(response=>{
+                this.product=response;
+                console.log('Product data received');
+              });
   }
 
   getNextProductId(id: number):number{
