@@ -9,6 +9,7 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'Client';
+  loading: string='Loading data..'
   constructor(private repo: RepositoryModel){
   }
 

@@ -30,6 +30,7 @@ namespace SportsStore.WebApi.Controllers
         public IActionResult GetById([FromRoute]long id)
         {
             var product = context.Products.Find(id);
+            System.Threading.Thread.Sleep(2000);
             return Ok(product);
         }
     }
