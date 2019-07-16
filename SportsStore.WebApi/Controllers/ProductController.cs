@@ -34,8 +34,22 @@ namespace SportsStore.WebApi.Controllers
                                  .Include(p=>p.Supplier)
                                  .Include(p=>p.Ratings)
                                  .FirstOrDefault(p=>p.ProductId.Equals(id));
+            if (product!=null)
+            {
+                if (product.Supplier!=null)
+                {
+                    product.Supplier.Products = null;
+                }
+                if (product.Ratings!=null)
+                {
+                    foreach (var item in product.Ratings)
+                    {
+                        item.Product = null;
+                    }
+                }
+            }
 
-            System.Threading.Thread.Sleep(2000);
+            //System.Threading.Thread.Sleep(2000);
             return Ok(product);
         }
     }
