@@ -38,7 +38,16 @@ namespace SportsStore.WebApi.Controllers
             {
                 if (product.Supplier!=null)
                 {
-                    product.Supplier.Products = null;
+                    product.Supplier.Products = product.Supplier.Products.Select(p=>
+                    new Product
+                    {
+                        ProductId = p.ProductId,
+                        Name = p.Name,
+                        Category = p.Category,
+                        Description = p.Description,
+                        Price = p.Price
+                    }
+                    );
                 }
                 if (product.Ratings!=null)
                 {
