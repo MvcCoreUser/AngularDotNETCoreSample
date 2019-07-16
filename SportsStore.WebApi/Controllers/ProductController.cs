@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SportsStore.WebApi.Models;
 
 namespace SportsStore.WebApi.Controllers
@@ -29,7 +30,11 @@ namespace SportsStore.WebApi.Controllers
         [HttpGet("{id}")]
         public IActionResult GetById([FromRoute]long id)
         {
-            var product = context.Products.Find(id);
+            var product = context.Products
+                                 .Include(p=>p.Supplier)
+                                 .Include(p=>p.Ratings)
+                                 .FirstOrDefault(p=>p.ProductId.Equals(id));
+
             System.Threading.Thread.Sleep(2000);
             return Ok(product);
         }

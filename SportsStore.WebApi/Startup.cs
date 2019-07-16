@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using SportsStore.WebApi.Models;
 
 namespace SportsStore.WebApi
@@ -39,7 +40,9 @@ namespace SportsStore.WebApi
                         .AllowAnyHeader()
                 );
             });
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .AddJsonOptions(options=>options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
