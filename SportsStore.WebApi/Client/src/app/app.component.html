@@ -11,6 +11,27 @@
           <p>Category: {{product?.category || loading}}</p>
           <hr class="my-4">
           <p>Price: {{product?.price || loading}}</p>
+          <div class="accordion" id="accordionSuppliers">
+            <div class="card">
+              <div class="card-header" id="headingOne">
+                <h2 class="mb-0">
+                  <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
+                   aria-controls="collapseOne" (click)="toggle()">
+                    Supplier
+                  </button>
+                </h2>
+              </div>
+
+              <div id="collapseOne" class="collapse" [class.show]="supplierShow" aria-labelledby="headingOne" data-parent="#accordionSuppliers">
+                <div class="card-body">
+                  <p>Name: {{product?.supplier?.name}}</p>
+                  <p>City: {{product?.supplier?.city}}</p>
+                  <p>State: {{product?.supplier?.state}}</p>
+                  <p>Products: {{product?.supplier?.products?.length}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
     </div>
     <div class="row">
