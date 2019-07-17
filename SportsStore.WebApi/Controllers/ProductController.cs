@@ -21,10 +21,30 @@ namespace SportsStore.WebApi.Controllers
         }
        
         [HttpGet(template:"")]
-        public IActionResult GetAll()
+        public IActionResult GetAll([FromQuery]bool related= false)
         {
-            var products = context.Products.AsQueryable().ToList();
-            return Ok(products);
+            IQueryable<Product> query = context.Products;
+            if (related)
+            {
+                query = query.Include(p => p.Supplier).Include(p => p.Ratings);
+                List<Product> data = query.ToList();
+                data.ForEach(p =>
+                {
+                    if (p.Supplier!=null)
+                    {
+                        p.Supplier.Products = null;
+                    }
+                    if (p.Ratings!=null)
+                    {
+                        p.Ratings.ForEach(r => r.Product = null);
+                    }
+                });
+                return Ok(data);
+            }
+            else
+            {
+                return Ok(query);
+            }
         }
 
         [HttpGet("{id}")]
