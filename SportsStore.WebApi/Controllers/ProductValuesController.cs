@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SportsStore.WebApi.Models;
+using SportsStore.WebApi.Models.BindingTargets;
 
 namespace SportsStore.WebApi.Controllers
 {
@@ -91,7 +92,28 @@ namespace SportsStore.WebApi.Controllers
             //System.Threading.Thread.Sleep(2000);
             return Ok(product);
         }
+
+        [HttpPost]
+        public IActionResult CreateProduct([FromBody] ProductData productData)
+        {
+            if (ModelState.IsValid)
+            {
+                Product product = productData.Product;
+                if (product.Supplier!=null && product.Supplier.SupplierId!=0)
+                {
+                    context.Attach(product.Supplier);
+                }
+                context.Add(product);
+                context.SaveChanges();
+                return Ok(product.ProductId);
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+        }
     }
 
+    
     
 }
