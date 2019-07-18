@@ -20,8 +20,8 @@ namespace SportsStore.WebApi.Controllers
             context = dataContext;
         }
        
-        [HttpGet(template:"")]
-        public IActionResult GetAll([FromQuery]string category, [FromQuery]string search, [FromQuery]bool related= false)
+        [HttpGet]
+        public IActionResult Get([FromQuery]string category, [FromQuery]string search, [FromQuery]bool related= false)
         {
             IQueryable<Product> query = context.Products;
             if (!string.IsNullOrWhiteSpace(category))
