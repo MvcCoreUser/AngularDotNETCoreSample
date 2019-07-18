@@ -21,9 +21,19 @@ namespace SportsStore.WebApi.Controllers
         }
        
         [HttpGet(template:"")]
-        public IActionResult GetAll([FromQuery]bool related= false)
+        public IActionResult GetAll([FromQuery]string category, [FromQuery]string search, [FromQuery]bool related= false)
         {
             IQueryable<Product> query = context.Products;
+            if (!string.IsNullOrWhiteSpace(category))
+            {
+                string categoryLower = category.ToLower();
+                query = query.Where(p => p.Category.ToLower().Contains(categoryLower));
+            }
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                string searchStr = search.ToLower();
+                query = query.Where(p => $"{p.Name.ToLower()} {p.Description.ToLower()}".Contains(searchStr));
+            }
             if (related)
             {
                 query = query.Include(p => p.Supplier).Include(p => p.Ratings);

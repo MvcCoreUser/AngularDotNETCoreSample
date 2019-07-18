@@ -5,7 +5,7 @@ import { Product } from './product.model';
 import { Injectable, InjectionToken, Inject } from "@angular/core";
 import { isNullOrUndefined } from 'util';
 import { Observable } from 'rxjs';
-import { HttpRequest } from '@angular/common/http';
+import { Filter } from "./configClasses.repository";
 
 export const REST_URL = new InjectionToken('rest_url');
 
@@ -14,13 +14,16 @@ export class RepositoryModel {
   products: Product[]=new Array<Product>();
   product: Product=new Product();
   private locator = (p: Product, id: number)=> p.productId == id;
+  private filterObj: Filter=new Filter();
   constructor(private dataSource: RestDataSource) {
-    //this.products=new Array<Product>();
-    //this.dataSource.getData().forEach(p=>this.products.push(p));
-    //this.dataSource.getData().toPromise().then(data=>this.products = data);
-    this.getProducts(true);
+    this.filterObj.category='soccer';
+    this.filterObj.related = true;
+    this.getProducts();
   }
 
+  get filter():Filter{
+    return this.filterObj;
+  }
   getProduct(id: number){
       this.sendRequest<Product>('GET', `${this.dataSource.url}products/${id}`)
               .subscribe(response=>{
@@ -30,7 +33,14 @@ export class RepositoryModel {
   }
 
   getProducts(related: boolean =false):void{
-    this.sendRequest<Product[]>('GET', `${this.dataSource.url}products/?related=${related}`)
+    let url: string = `${this.dataSource.url}products/?related=${this.filterObj.related}`;
+    if (this.filterObj.category) {
+      url+=`&category=${this.filterObj.category}`;
+    }
+    if (this.filterObj.search) {
+      url+=`&search=${this.filterObj.search}`;
+    }
+    this.sendRequest<Product[]>('GET', url)
         .subscribe(response=>this.products=response);
   }
 
