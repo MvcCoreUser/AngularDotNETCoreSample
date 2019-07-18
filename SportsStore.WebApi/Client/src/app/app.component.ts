@@ -19,6 +19,10 @@ export class AppComponent {
     return this.repo.product;
   }
 
+  get products():Product[]{
+    return this.repo.products;
+  }
+
   toggle(){
     this.supplierShow=!this.supplierShow;
   }

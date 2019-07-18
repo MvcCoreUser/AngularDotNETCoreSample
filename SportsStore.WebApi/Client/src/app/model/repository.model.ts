@@ -11,19 +11,14 @@ export const REST_URL = new InjectionToken('rest_url');
 
 @Injectable()
 export class RepositoryModel {
-  private products: Product[]=new Array<Product>();
+  products: Product[]=new Array<Product>();
   product: Product=new Product();
   private locator = (p: Product, id: number)=> p.productId == id;
   constructor(private dataSource: RestDataSource) {
     //this.products=new Array<Product>();
     //this.dataSource.getData().forEach(p=>this.products.push(p));
     //this.dataSource.getData().toPromise().then(data=>this.products = data);
-    this.getProduct(1);
-  }
-
-  getProducts(): Product[]{
-
-    return this.products;
+    this.getProducts(true);
   }
 
   getProduct(id: number){
@@ -32,6 +27,11 @@ export class RepositoryModel {
                 this.product=response;
                 console.log('Product data received');
               });
+  }
+
+  getProducts(related: boolean =false):void{
+    this.sendRequest<Product[]>('GET', `${this.dataSource.url}products/?related=${related}`)
+        .subscribe(response=>this.products=response);
   }
 
   private sendRequest<T>(method: string, url: string, data?: any):Observable<T>{
