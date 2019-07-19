@@ -17,6 +17,12 @@
             <td>{{product.ratings?.length || 0}}</td>
         </tr>
       </table>
+      <button class="btn btn-primary m-1" (click)="createProduct()">
+        Create Product
+      </button>
+      <button class="btn btn-primary m-1" (click)="createProductAndSupplier()">
+        Create Product And Supplier
+      </button>
     </div>
     <div class="row">
         <router-outlet></router-outlet>

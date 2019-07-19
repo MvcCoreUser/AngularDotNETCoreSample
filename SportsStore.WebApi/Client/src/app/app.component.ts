@@ -1,3 +1,4 @@
+import { Supplier } from './model/supplier.model';
 import { Product } from './model/product.model';
 import { RepositoryModel } from './model/repository.model';
 import { Component } from '@angular/core';
@@ -10,7 +11,6 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'Client';
   loading: string='Loading data..';
-  supplierShow:boolean=true;
   constructor(private repo: RepositoryModel){
   }
 
@@ -23,7 +23,15 @@ export class AppComponent {
     return this.repo.products;
   }
 
-  toggle(){
-    this.supplierShow=!this.supplierShow;
+  createProduct(){
+    let product:Product=new Product(0, "X-Ray Scuba Mask", "Watersports", 49.99,"See what the fish are hiding",this.repo.products[0].supplier);
+    this.repo.createProduct(product);
   }
+
+  createProductAndSupplier(){
+    let s=new Supplier(0, "Rocket Shoe Corp", "Boston", "MA");
+    let p=new Product(0, "Rocket-Powered Shoes", "Running", 100, "Set a new record", s);
+    this.repo.createProductAndSupplier(p, s);
+  }
+
 }

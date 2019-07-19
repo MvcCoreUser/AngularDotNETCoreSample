@@ -1,3 +1,5 @@
+import { ProductData } from './repository.model';
+import { Supplier } from './supplier.model';
 
 import { RestDataSource } from './rest.datasource';
 // import { StaticDataSource } from './static.datasource';
@@ -15,9 +17,14 @@ export class RepositoryModel {
   product: Product=new Product();
   private locator = (p: Product, id: number)=> p.productId == id;
   private filterObj: Filter=new Filter();
+  private productUrl: string;
+  private supplierUrl: string;
+  private suppliers: Supplier[]=[];
   constructor(private dataSource: RestDataSource) {
-    this.filterObj.category='soccer';
+    //this.filterObj.category='soccer';
     this.filterObj.related = true;
+    this.productUrl=`${this.dataSource.url}products/`;
+    this.supplierUrl = `${this.dataSource.url}suppliers/`
     this.getProducts();
   }
 
@@ -25,7 +32,7 @@ export class RepositoryModel {
     return this.filterObj;
   }
   getProduct(id: number){
-      this.sendRequest<Product>('GET', `${this.dataSource.url}products/${id}`)
+      this.sendRequest<Product>('GET', `${this.productUrl}/${id}`)
               .subscribe(response=>{
                 this.product=response;
                 console.log('Product data received');
@@ -33,7 +40,7 @@ export class RepositoryModel {
   }
 
   getProducts(related: boolean =false):void{
-    let url: string = `${this.dataSource.url}products/?related=${this.filterObj.related}`;
+    let url: string = `${this.productUrl}?related=${this.filterObj.related}`;
     if (this.filterObj.category) {
       url+=`&category=${this.filterObj.category}`;
     }
@@ -44,59 +51,65 @@ export class RepositoryModel {
         .subscribe(response=>this.products=response);
   }
 
+  getSuppliers():void{
+    this.sendRequest<Supplier[]>('GET', this.supplierUrl)
+        .subscribe(response=>this.suppliers=response);
+  }
+
+  createProduct(product: Product){
+    let data: ProductData={
+      name:product.name,
+      category:product.category,
+      description : product.description,
+      price : product.price,
+      supplierId: product.supplier?product.supplier.supplierId:0
+    };
+
+    data.supplierId = product.supplier?product.supplier.supplierId:0;
+    this.sendRequest<number>('POST', this.productUrl, data)
+        .subscribe(response=>{
+          product.productId=response;
+          this.products.push(product);
+        });
+  }
+
+  createProductAndSupplier(product: Product, supplier: Supplier){
+    let data: SupplierData={
+      name:supplier.name,
+      city:supplier.city,
+      state:supplier.state,
+    }
+
+    this.sendRequest<number>('POST', this.supplierUrl, data)
+        .subscribe(response=>{
+          supplier.supplierId=response;
+          product.supplier=supplier;
+          this.suppliers.push(supplier);
+          if (product!=null) {
+            this.createProduct(product);
+          }
+        });
+
+  }
+
   private sendRequest<T>(method: string, url: string, data?: any):Observable<T>{
     return this.dataSource.httpClient.request<T>(method, url, {body: data});
   }
 
-  getNextProductId(id: number):number{
-    let res: number;
-    let index = this.products.findIndex(p=>this.locator(p, id));
-    if (index>-1) {
-      res= this.products[this.products.length > index+2?index+1:0].productId;
-    }
-    else {
-      res= id || 0;
-    }
-    return res;
-  }
 
-  getPrevProductId(id: number):number{
-    let index = this.products.findIndex(p=>this.locator(p, id));
-    if (index>-1) {
-      return this.products[index>0?index-1:this.products.length-1].productId;
-    } else {
-      return id || 0;
-    }
-  }
 
-  saveProduct(product: Product){
-    if (isNullOrUndefined(product.productId) || product.productId==0) {
-      this.dataSource.saveProduct(product).subscribe(p=>this.products.push(p));
-    }
-    else{
-      this.dataSource.updateProduct(product).subscribe(p => {
-        let index = this.products.findIndex(p=>this.locator(p, product.productId));
-        this.products.splice(index, 1, product);
-      });
+}
 
-    }
-  }
+export interface ProductData{
+  name:string;
+  category: string;
+  description: string;
+  price: number;
+  supplierId: number
+}
 
-  deleteProduct(id: number):void{
-    this.dataSource.deleteProduct(id).subscribe(()=>{
-      let index = this.products.findIndex(p=>this.locator(p, id));
-      if (index>-1) {
-        this.products.splice(index, 1);
-      }
-    });
-
-  }
-
-  private generateID(): number {
-    let newID=100;
-    while (!isNullOrUndefined(this.getProduct(newID))) {
-      newID++;
-    }
-    return newID;
-  }
+export interface SupplierData{
+  name:string;
+  city: string;
+  state: string;
 }
