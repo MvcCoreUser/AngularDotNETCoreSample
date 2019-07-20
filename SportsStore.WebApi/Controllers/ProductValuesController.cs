@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SportsStore.WebApi.Models;
@@ -133,6 +134,29 @@ namespace SportsStore.WebApi.Controllers
                 return BadRequest(ModelState);
             }
         }
+
+        [HttpPatch("{id}")]
+        public IActionResult UpdatePatch([FromRoute]long id, [FromBody] JsonPatchDocument<ProductData> jsonPatch)
+        {
+            Product product = context.Products.Include(p => p.Supplier).First(p => p.ProductId.Equals(id));
+            ProductData productData = new ProductData { Product = product };
+            jsonPatch.ApplyTo(productData, ModelState);
+            if (ModelState.IsValid && TryValidateModel(productData))
+            {
+                if (product.Supplier!=null && product.Supplier.SupplierId!=0)
+                {
+                    context.Attach(product.Supplier);
+                }
+                context.SaveChanges();
+                return Ok(); 
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+        }
+
+
     }
 
     
