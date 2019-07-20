@@ -21,13 +21,13 @@ namespace SportsStore.WebApi.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Supplier> Get()
+        public IEnumerable<Supplier> GetSuppliers()
         {
             return context.Suppliers;
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] SupplierData supplierData)
+        public IActionResult CreateSupplier([FromBody] SupplierData supplierData)
         {
             if (ModelState.IsValid)
             {
@@ -35,6 +35,23 @@ namespace SportsStore.WebApi.Controllers
                 context.Add(supplier);
                 context.SaveChanges();
                 return Ok(supplier.SupplierId);
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult ReplaceSupplier([FromRoute] long id, [FromBody] SupplierData supplierData)
+        {
+            if (ModelState.IsValid)
+            {
+                Supplier supplier = supplierData.Supplier;
+                supplier.SupplierId = id;
+                context.Update(supplier);
+                context.SaveChanges();
+                return Ok();
             }
             else
             {

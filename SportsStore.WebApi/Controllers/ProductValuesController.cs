@@ -22,7 +22,7 @@ namespace SportsStore.WebApi.Controllers
         }
        
         [HttpGet]
-        public IActionResult Get([FromQuery]string category, [FromQuery]string search, [FromQuery]bool related= false)
+        public IActionResult GetProducts([FromQuery]string category, [FromQuery]string search, [FromQuery]bool related= false)
         {
             IQueryable<Product> query = context.Products;
             if (!string.IsNullOrWhiteSpace(category))
@@ -59,7 +59,7 @@ namespace SportsStore.WebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById([FromRoute]long id)
+        public IActionResult GetProductById([FromRoute]long id)
         {
             var product = context.Products
                                  .Include(p=>p.Supplier)
@@ -106,6 +106,27 @@ namespace SportsStore.WebApi.Controllers
                 context.Add(product);
                 context.SaveChanges();
                 return Ok(product.ProductId);
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult ReplaceProduct([FromRoute] long id, [FromBody] ProductData productData)
+        {
+            if (ModelState.IsValid)
+            {
+                Product product = productData.Product;
+                product.ProductId = id;
+                if (product.Supplier!=null && product.Supplier.SupplierId!=0)
+                {
+                    context.Attach(product.Supplier);
+                }
+                context.Update(product);
+                context.SaveChanges();
+                return Ok();
             }
             else
             {
