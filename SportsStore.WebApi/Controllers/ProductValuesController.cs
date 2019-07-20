@@ -136,7 +136,7 @@ namespace SportsStore.WebApi.Controllers
         }
 
         [HttpPatch("{id}")]
-        public IActionResult UpdatePatch([FromRoute]long id, [FromBody] JsonPatchDocument<ProductData> jsonPatch)
+        public IActionResult UpdateProduct([FromRoute]long id, [FromBody] JsonPatchDocument<ProductData> jsonPatch)
         {
             Product product = context.Products.Include(p => p.Supplier).First(p => p.ProductId.Equals(id));
             ProductData productData = new ProductData { Product = product };
@@ -154,6 +154,14 @@ namespace SportsStore.WebApi.Controllers
             {
                 return BadRequest(ModelState);
             }
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteProduct([FromRoute]long id)
+        {
+            context.Products.Remove(new Product { ProductId = id });
+            context.SaveChanges();
+            return NoContent();
         }
 
 
