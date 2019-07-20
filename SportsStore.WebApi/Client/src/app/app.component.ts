@@ -45,4 +45,11 @@ export class AppComponent {
     let supplier = new Supplier(3, 'Modified Supplier', 'New York', 'NY');
     this.repo.replaceSupplier(supplier);
   }
+
+  updateProduct():void{
+    let changes = new Map<string, any>();
+    changes.set('name', 'Green Kayak');
+    changes.set('supplierId', null);
+    this.repo.updateProduct(1, changes);
+  }
 }

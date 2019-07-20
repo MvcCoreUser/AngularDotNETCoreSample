@@ -113,6 +113,17 @@ export class RepositoryModel {
     this.sendRequest('PUT', `${this.supplierUrl}${supplier.supplierId}`, data)
         .subscribe(response=>this.getProducts());
   }
+
+  updateProduct(id: number, changes: Map<string, any>){
+    let patch:JsonPatchItem[]=[];
+    changes.forEach((value, key)=>{
+      patch.push({op:'replace', path: key, value: value});
+    });
+
+    this.sendRequest('PATCH', `${this.productUrl}${id}`, patch)
+        .subscribe(response=> this.getProducts());
+  }
+
   private sendRequest<T>(method: string, url: string, data?: any):Observable<T>{
     return this.dataSource.httpClient.request<T>(method, url, {body: data});
   }
@@ -133,4 +144,10 @@ interface SupplierData{
   name:string;
   city: string;
   state: string;
+}
+
+interface JsonPatchItem{
+  op: string,
+  path:string,
+  value: any
 }
