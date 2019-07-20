@@ -1,4 +1,4 @@
-import { ProductData } from './repository.model';
+
 import { Supplier } from './supplier.model';
 
 import { RestDataSource } from './rest.datasource';
@@ -92,6 +92,27 @@ export class RepositoryModel {
 
   }
 
+  replaceProduct(product: Product){
+    let data: ProductData={
+      name: product.name,
+      category: product.category,
+      description: product.description,
+      price: product.price,
+      supplierId: product.supplier?product.supplier.supplierId:0
+    };
+    this.sendRequest('PUT', `${this.productUrl}${product.productId}`, data)
+        .subscribe(response=>this.getProducts());
+  }
+
+  replaceSupplier(supplier: Supplier){
+    let data: SupplierData={
+      name: supplier.name,
+      city: supplier.city,
+      state: supplier.state
+    }
+    this.sendRequest('PUT', `${this.supplierUrl}${supplier.supplierId}`, data)
+        .subscribe(response=>this.getProducts());
+  }
   private sendRequest<T>(method: string, url: string, data?: any):Observable<T>{
     return this.dataSource.httpClient.request<T>(method, url, {body: data});
   }
@@ -100,7 +121,7 @@ export class RepositoryModel {
 
 }
 
-export interface ProductData{
+interface ProductData{
   name:string;
   category: string;
   description: string;
@@ -108,7 +129,7 @@ export interface ProductData{
   supplierId: number
 }
 
-export interface SupplierData{
+interface SupplierData{
   name:string;
   city: string;
   state: string;

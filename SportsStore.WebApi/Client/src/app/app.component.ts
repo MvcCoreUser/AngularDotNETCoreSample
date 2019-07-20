@@ -34,4 +34,15 @@ export class AppComponent {
     this.repo.createProductAndSupplier(p, s);
   }
 
+  replaceProduct(){
+    let product: Product = this.repo.products[0];
+    product.name = 'Modified Product';
+    product.category = 'Modified Category';
+    this.repo.replaceProduct(product);
+  }
+
+  replaceSupplier(){
+    let supplier = new Supplier(3, 'Modified Supplier', 'New York', 'NY');
+    this.repo.replaceSupplier(supplier);
+  }
 }
