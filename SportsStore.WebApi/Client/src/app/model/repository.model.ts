@@ -124,6 +124,19 @@ export class RepositoryModel {
         .subscribe(response=> this.getProducts());
   }
 
+  deleteProduct(id: number){
+    this.sendRequest('DELETE', `${this.productUrl}${id}`)
+        .subscribe(response=>this.getProducts());
+  }
+
+  deleteSupplier(id: number){
+    this.sendRequest('DELETE', `${this.supplierUrl}${id}`)
+        .subscribe(response=>{
+            this.getProducts();
+            this.getSuppliers();
+        });
+  }
+
   private sendRequest<T>(method: string, url: string, data?: any):Observable<T>{
     return this.dataSource.httpClient.request<T>(method, url, {body: data});
   }
