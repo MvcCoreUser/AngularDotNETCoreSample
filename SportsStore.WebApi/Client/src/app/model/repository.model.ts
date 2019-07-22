@@ -31,6 +31,7 @@ export class RepositoryModel {
   get filter():Filter{
     return this.filterObj;
   }
+
   getProduct(id: number){
       this.sendRequest<Product>('GET', `${this.productUrl}/${id}`)
               .subscribe(response=>{
