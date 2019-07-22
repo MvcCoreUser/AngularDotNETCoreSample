@@ -1,3 +1,5 @@
+import { CategoryFilterComponent } from './core/structure/categoryFilter.component';
+import { ProductTableComponent } from './core/structure/productTable.component';
 import { CoreModule } from './core/core.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -9,7 +11,9 @@ import { HomeComponent } from './core/home/home.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ProductTableComponent,
+    CategoryFilterComponent
   ],
   imports: [
     BrowserModule,
