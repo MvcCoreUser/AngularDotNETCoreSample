@@ -6,7 +6,7 @@ import { HomeComponent } from './core/home/home.component';
 
 const routes: Routes = [
   { path: 'table', component: ProductTableComponent, pathMatch: 'full' },
-  {path: 'detail', component: ProductDetailComponent, pathMatch: 'full'},
+  {path: 'detail/:id', component: ProductDetailComponent, pathMatch: 'full'},
   {path: '', component: ProductTableComponent}
 ];
 
