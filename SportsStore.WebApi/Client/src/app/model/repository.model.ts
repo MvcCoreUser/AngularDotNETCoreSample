@@ -1,15 +1,12 @@
 
 import { Supplier } from './supplier.model';
-
-import { RestDataSource } from './rest.datasource';
 // import { StaticDataSource } from './static.datasource';
 import { Product } from './product.model';
 import { Injectable, InjectionToken, Inject } from "@angular/core";
 import { isNullOrUndefined } from 'util';
 import { Observable } from 'rxjs';
 import { Filter } from "./configClasses.repository";
-
-export const REST_URL = new InjectionToken('rest_url');
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class RepositoryModel {
@@ -20,11 +17,11 @@ export class RepositoryModel {
   private productUrl: string;
   private supplierUrl: string;
   private suppliers: Supplier[]=[];
-  constructor(private dataSource: RestDataSource) {
+  constructor(public httpClient: HttpClient, @Inject('REST_URL') private url: string) {
     //this.filterObj.category='soccer';
     this.filterObj.related = true;
-    this.productUrl=`${this.dataSource.url}products/`;
-    this.supplierUrl = `${this.dataSource.url}suppliers/`
+    this.productUrl=`${this.url}products/`;
+    this.supplierUrl = `${this.url}suppliers/`
     this.getProducts();
   }
 
@@ -139,7 +136,7 @@ export class RepositoryModel {
   }
 
   private sendRequest<T>(method: string, url: string, data?: any):Observable<T>{
-    return this.dataSource.httpClient.request<T>(method, url, {body: data});
+    return this.httpClient.request<T>(method, url, {body: data});
   }
 
 

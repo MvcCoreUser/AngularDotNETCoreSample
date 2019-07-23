@@ -8,7 +8,8 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { RepositoryModelModule } from './model/model.module';
-import { HomeComponent } from './core/home/home.component';
+
+const restUrl=`http://${window.location.hostname}:5000/api/`;
 
 @NgModule({
   declarations: [
@@ -23,7 +24,9 @@ import { HomeComponent } from './core/home/home.component';
     RepositoryModelModule,
     CoreModule
   ],
-  providers: [],
+  providers: [
+    {provide: 'REST_URL', useValue: restUrl}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
