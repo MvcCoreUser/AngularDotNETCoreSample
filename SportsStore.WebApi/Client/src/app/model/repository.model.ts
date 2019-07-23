@@ -33,7 +33,7 @@ export class RepositoryModel {
   }
 
   getProduct(id: number){
-      this.sendRequest<Product>('GET', `${this.productUrl}/${id}`)
+      this.sendRequest<Product>('GET', `${this.productUrl}${id}`)
               .subscribe(response=>{
                 this.product=response;
                 console.log('Product data received');

@@ -16,4 +16,7 @@ export class ProductTableComponent{
     return this.repo.products;
   }
 
+  selectProduct(id: number){
+    this.repo.getProduct(id);
+  }
 }
