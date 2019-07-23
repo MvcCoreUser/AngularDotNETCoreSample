@@ -1,3 +1,4 @@
+import { ProductDetailComponent } from './core/structure/productDetail.component';
 import { CategoryFilterComponent } from './core/structure/categoryFilter.component';
 import { ProductTableComponent } from './core/structure/productTable.component';
 import { CoreModule } from './core/core.module';
@@ -13,7 +14,8 @@ import { HomeComponent } from './core/home/home.component';
   declarations: [
     AppComponent,
     ProductTableComponent,
-    CategoryFilterComponent
+    CategoryFilterComponent,
+    ProductDetailComponent
   ],
   imports: [
     BrowserModule,
