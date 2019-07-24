@@ -1,6 +1,7 @@
-import { ProductDetailComponent } from './core/structure/productDetail.component';
-import { CategoryFilterComponent } from './core/structure/categoryFilter.component';
-import { ProductTableComponent } from './core/structure/productTable.component';
+import { StoreModule } from './store/store.module';
+// import { ProductDetailComponent } from './core/structure/productDetail.component';
+// import { CategoryFilterComponent } from './core/structure/categoryFilter.component';
+// import { ProductTableComponent } from './core/structure/productTable.component';
 import { CoreModule } from './core/core.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -13,16 +14,14 @@ const restUrl=`http://${window.location.hostname}:5000/api/`;
 
 @NgModule({
   declarations: [
-    AppComponent,
-    ProductTableComponent,
-    CategoryFilterComponent,
-    ProductDetailComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     RepositoryModelModule,
-    CoreModule
+    CoreModule,
+    StoreModule
   ],
   providers: [
     {provide: 'REST_URL', useValue: restUrl}
