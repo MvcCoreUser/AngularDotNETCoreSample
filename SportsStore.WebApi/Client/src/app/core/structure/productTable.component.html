@@ -7,7 +7,7 @@
   <tr *ngFor="let product of products">
     <td>{{product.name}}</td>
     <td>{{product.category}}</td>
-    <td>{{product.price}}</td>
+    <td>{{product.price || currency: 'USD'}}</td>
     <td>
       <button class="btn btn-primary btn-sm" [routerLink]="['/detail', product.productId]"
       routerLinkActive="active">
