@@ -16,8 +16,8 @@ export class RepositoryModel {
   private filterObj: Filter=new Filter();
   private productUrl: string;
   private supplierUrl: string;
-  private suppliers: Supplier[]=[];
-  private categories: string[]=[];
+  suppliers: Supplier[]=[];
+  categories: string[]=[];
   constructor(public httpClient: HttpClient, @Inject('REST_URL') private url: string) {
     //this.filterObj.category='soccer';
     this.filterObj.related = true;

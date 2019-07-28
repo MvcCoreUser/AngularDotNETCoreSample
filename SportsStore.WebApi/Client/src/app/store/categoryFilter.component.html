@@ -1,1 +1,12 @@
-<h3>Placeholder: Category Filter</h3>
+
+<div class="m-1">
+  <button class="btn btn-outline-primary btn-block" (click)="currentCategory=null;">
+      All Categories
+  </button>
+  <button *ngFor="let category of categories"
+     class="btn btn-outline-secondary btn-block"
+     [class.active]="currentCategory==category"
+     (click)="currentCategory=category;">
+    {{category}}
+  </button>
+</div>
