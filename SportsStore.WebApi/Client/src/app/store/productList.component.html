@@ -4,7 +4,7 @@
     <div class="card-header">
       <span class="h4">{{product.name}}</span>
       <span class="float-right badge badge-pill badge-primary">
-        {{product.price}}
+        {{product.price | currency:'USD':true}}
       </span>
     </div>
     <div class="card-body">
