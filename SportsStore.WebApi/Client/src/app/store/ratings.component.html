@@ -1,1 +1,4 @@
-<h5>Placeholder: Ratings</h5>
+<span class="h6 ml-1">
+  <i *ngFor="let star of stars" [class]="star? 'fa fa-star' : 'fa fa-star-o'" [style.color]="star ? 'goldenrod' : 'gray'">
+  </i>
+</span>
