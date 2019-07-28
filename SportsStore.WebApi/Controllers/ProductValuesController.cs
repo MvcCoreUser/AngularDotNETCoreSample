@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,13 +18,24 @@ namespace SportsStore.WebApi.Controllers
     {
         private DataContext context;
 
+        [NonAction]
+        private IActionResult CreateMetadata(IEnumerable<Product> products)
+        {
+            var obj = new
+            {
+                data = products,
+                categories = context.Products.Select(p => p.Category).Distinct().OrderBy(c => c)
+            };
+            return Ok(obj);
+        }
+
         public ProductValuesController(DataContext dataContext)
         {
             context = dataContext;
         }
        
         [HttpGet]
-        public IActionResult GetProducts([FromQuery]string category, [FromQuery]string search, [FromQuery]bool related= false)
+        public IActionResult GetProducts([FromQuery]string category, [FromQuery]string search, [FromQuery]bool related= false, [FromQuery]bool metadata=false)
         {
             IQueryable<Product> query = context.Products;
             if (!string.IsNullOrWhiteSpace(category))
@@ -51,11 +63,11 @@ namespace SportsStore.WebApi.Controllers
                         p.Ratings.ForEach(r => r.Product = null);
                     }
                 });
-                return Ok(data);
+                return metadata? CreateMetadata(data): Ok(data);
             }
             else
             {
-                return Ok(query);
+                return metadata? CreateMetadata(query): Ok(query);
             }
         }
 
