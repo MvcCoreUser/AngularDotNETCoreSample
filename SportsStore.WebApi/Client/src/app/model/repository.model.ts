@@ -17,6 +17,7 @@ export class RepositoryModel {
   private productUrl: string;
   private supplierUrl: string;
   private suppliers: Supplier[]=[];
+  private categories: string[]=[];
   constructor(public httpClient: HttpClient, @Inject('REST_URL') private url: string) {
     //this.filterObj.category='soccer';
     this.filterObj.related = true;
@@ -45,8 +46,12 @@ export class RepositoryModel {
     if (this.filterObj.search) {
       url+=`&search=${this.filterObj.search}`;
     }
-    this.sendRequest<Product[]>('GET', url)
-        .subscribe(response=>this.products=response);
+    url+='&metadata=true';
+    this.sendRequest<ProductsWithMetadata>('GET', url)
+        .subscribe(response=>{
+          this.products=response.data;
+          this.categories = response.categories;
+        });
   }
 
   getSuppliers():void{
@@ -161,4 +166,9 @@ interface JsonPatchItem{
   op: string,
   path:string,
   value: any
+}
+
+interface ProductsWithMetadata{
+  data: Product[],
+  categories: string[]
 }
