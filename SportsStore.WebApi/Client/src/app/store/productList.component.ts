@@ -12,6 +12,9 @@ export class ProductListComponent {
   }
 
   get products(): Product[]{
-    return this.repo.products;
+    if (this.repo.products!=null && this.repo.products.length>0) {
+      let pageIndex = this.repo.pagination.productsPerPage*(this.repo.pagination.currentPage-1);
+      return this.repo.products.slice(pageIndex, pageIndex+this.repo.pagination.productsPerPage);
+    }
   }
 }

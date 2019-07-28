@@ -1,2 +1,6 @@
 
-<h3>Placeholder: Page Controls</h3>
+<div class="text-right my-2" *ngIf="pages.length>1">
+  <button *ngFor="let page of pages" class="btn btn-outline-primary mx-1" [class.active]="current==page" (click)="current=page;">
+      {{page}}
+  </button>
+</div>

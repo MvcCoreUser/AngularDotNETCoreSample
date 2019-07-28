@@ -5,7 +5,7 @@ import { Product } from './product.model';
 import { Injectable, InjectionToken, Inject } from "@angular/core";
 import { isNullOrUndefined } from 'util';
 import { Observable } from 'rxjs';
-import { Filter } from "./configClasses.repository";
+import { Filter, Pagination } from "./configClasses.repository";
 import { HttpClient } from '@angular/common/http';
 
 @Injectable()
@@ -16,6 +16,8 @@ export class RepositoryModel {
   private filterObj: Filter=new Filter();
   private productUrl: string;
   private supplierUrl: string;
+  private paginationObject: Pagination=new Pagination();
+
   suppliers: Supplier[]=[];
   categories: string[]=[];
   constructor(public httpClient: HttpClient, @Inject('REST_URL') private url: string) {
@@ -28,6 +30,10 @@ export class RepositoryModel {
 
   get filter():Filter{
     return this.filterObj;
+  }
+
+  get pagination():Pagination{
+    return this.paginationObject;
   }
 
   getProduct(id: number){
@@ -51,6 +57,7 @@ export class RepositoryModel {
         .subscribe(response=>{
           this.products=response.data;
           this.categories = response.categories;
+          this.paginationObject.currentPage=1;
         });
   }
 
