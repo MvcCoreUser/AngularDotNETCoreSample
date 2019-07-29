@@ -1,3 +1,4 @@
+import { ProductSelection, ProductSelectionData } from './productSelection.model';
 
 import { Supplier } from './supplier.model';
 // import { StaticDataSource } from './static.datasource';
@@ -7,15 +8,18 @@ import { isNullOrUndefined } from 'util';
 import { Observable } from 'rxjs';
 import { Filter, Pagination } from "./configClasses.repository";
 import { HttpClient } from '@angular/common/http';
+import { Cart } from './cart.model';
 
 @Injectable()
 export class RepositoryModel {
   products: Product[]=new Array<Product>();
+  productSelections: ProductSelection[]=new Array<ProductSelection>();
   product: Product=new Product();
   private locator = (p: Product, id: number)=> p.productId == id;
   private filterObj: Filter=new Filter();
   private productUrl: string;
   private supplierUrl: string;
+  private sessionUrl: string;
   private paginationObject: Pagination=new Pagination();
 
   suppliers: Supplier[]=[];
@@ -24,9 +28,15 @@ export class RepositoryModel {
     //this.filterObj.category='soccer';
     this.filterObj.related = true;
     this.productUrl=`${this.url}products/`;
-    this.supplierUrl = `${this.url}suppliers/`
+    this.supplierUrl = `${this.url}suppliers/`;
+    this.sessionUrl = `${this.url}session/cart/`;
     this.getProducts();
   }
+
+  private sendRequest<T>(method: string, url: string, data?: any):Observable<T>{
+    return this.httpClient.request<T>(method, url, {body: data});
+  }
+
 
   get filter():Filter{
     return this.filterObj;
@@ -147,11 +157,22 @@ export class RepositoryModel {
         });
   }
 
-  private sendRequest<T>(method: string, url: string, data?: any):Observable<T>{
-    return this.httpClient.request<T>(method, url, {body: data});
+  setSessionData(data: ProductSelection[]){
+    return this.sendRequest<any>('POST', this.sessionUrl,  data.map(s => {
+      return {
+          productId: s.productId, name: s.name,
+          price: s.price, quantity: s.quantity
+      }
+  }))
+               .subscribe(response=>{console.log(response)});
   }
 
-
+  getSessionData(cart: Cart):void{
+    this.sendRequest<ProductSelectionData[]>('GET', this.sessionUrl)
+                .subscribe(response=>{
+                  this.productSelections = response.map(psd=>new ProductSelection(cart, psd.productId, psd.price, psd.name, psd.quantity));
+                });
+  }
 
 }
 
@@ -179,3 +200,5 @@ interface ProductsWithMetadata{
   data: Product[],
   categories: string[]
 }
+
+

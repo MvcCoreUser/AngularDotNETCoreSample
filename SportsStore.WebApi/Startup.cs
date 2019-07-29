@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Community.Microsoft.Extensions.Caching.PostgreSql;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -46,6 +47,18 @@ namespace SportsStore.WebApi
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
                     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                     });
+            services.AddDistributedPostgreSqlCache(options =>
+            {
+                options.SchemaName = Configuration[$"Data:Products:Caching:{nameof(options.SchemaName)}"];
+                options.TableName = Configuration[$"Data:Products:Caching:{nameof(options.TableName)}"];
+                options.ConnectionString = Configuration["Data:Products:ConnectionString"];
+            });
+
+            services.AddSession(options =>
+            {
+                options.Cookie.Name = "SportsStore.Session";
+                options.IdleTimeout = TimeSpan.FromHours(48);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,6 +69,7 @@ namespace SportsStore.WebApi
                 app.UseDeveloperExceptionPage();
             }
             //app.UseCors(builder => builder.WithOrigins(Configuration["ClientUrl"]).AllowAnyMethod().AllowCredentials().AllowAnyHeader());
+            app.UseSession();
             app.UseCors("default");
             app.UseMvcWithDefaultRoute();
             using (var scope = app.ApplicationServices.CreateScope())
