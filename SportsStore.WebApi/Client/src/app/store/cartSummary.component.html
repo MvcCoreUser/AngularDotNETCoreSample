@@ -3,7 +3,7 @@
   <small *ngIf="itemCount>0; else empty">
     ({{itemCount}} items {{totalPrice | currency: 'USD': true}})
   </small>
-  <button class="btn btn-sm ml-1" [disabled]="itemCount==0" routerLink="'/cart'">
+  <button class="btn btn-sm ml-1" [disabled]="itemCount==0" routerLink="/cart">
     <i class="fa fa-shopping-cart"></i>
   </button>
 </div>
