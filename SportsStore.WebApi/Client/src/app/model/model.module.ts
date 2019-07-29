@@ -1,3 +1,4 @@
+import { Cart } from './cart.model';
 
 //import { StaticDataSource } from './static.datasource';
 import { RepositoryModel } from './repository.model';
@@ -9,7 +10,8 @@ import { HttpClientModule, HttpClientJsonpModule } from "@angular/common/http";
 @NgModule({
   imports:[HttpClientModule, HttpClientJsonpModule],
   providers: [
-    RepositoryModel
+    RepositoryModel,
+    Cart
   ]
 })
 export class RepositoryModelModule{}
