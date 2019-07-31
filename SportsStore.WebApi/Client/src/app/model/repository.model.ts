@@ -1,3 +1,4 @@
+import { Order } from './order.model';
 import { ProductSelection, ProductSelectionData } from './productSelection.model';
 
 import { Supplier } from './supplier.model';
@@ -13,23 +14,26 @@ import { Cart } from './cart.model';
 @Injectable()
 export class RepositoryModel {
   products: Product[]=new Array<Product>();
-  productSelections: ProductSelection[]=new Array<ProductSelection>();
   product: Product=new Product();
   private locator = (p: Product, id: number)=> p.productId == id;
   private filterObj: Filter=new Filter();
   private productUrl: string;
   private supplierUrl: string;
   private sessionUrl: string;
+  private orderUrl: string;
   private paginationObject: Pagination=new Pagination();
+  private PRD_SEL_STR:string="productSelections";
 
   suppliers: Supplier[]=[];
   categories: string[]=[];
+  orders: Order[]=[];
   constructor(public httpClient: HttpClient, @Inject('REST_URL') private url: string) {
     //this.filterObj.category='soccer';
     this.filterObj.related = true;
     this.productUrl=`${this.url}products/`;
     this.supplierUrl = `${this.url}suppliers/`;
     this.sessionUrl = `${this.url}session/cart/`;
+    this.orderUrl = `${this.url}orders`;
     this.getProducts();
   }
 
@@ -158,22 +162,51 @@ export class RepositoryModel {
   }
 
   setSessionData(data: ProductSelection[]){
-    return this.sendRequest<any>('POST', this.sessionUrl,  data.map(s => {
-      return {
-          productId: s.productId, name: s.name,
-          price: s.price, quantity: s.quantity
-      }
-  }))
-               .subscribe(response=>{console.log(response)});
+  //   return this.sendRequest<any>('POST', this.sessionUrl,  data.map(s => {
+  //     return {
+  //         productId: s.productId, name: s.name,
+  //         price: s.price, quantity: s.quantity
+  //     }
+  // }))
+  //              .subscribe(response=>{console.log(response)});
+    let jsonData=data.map(s => s.getData());
+    window.localStorage.setItem(this.PRD_SEL_STR, JSON.stringify(jsonData));
   }
 
-  getSessionData(cart: Cart):void{
-    this.sendRequest<ProductSelectionData[]>('GET', this.sessionUrl)
-                .subscribe(response=>{
-                  this.productSelections = response.map(psd=>new ProductSelection(cart, psd.productId, psd.price, psd.name, psd.quantity));
-                });
+  getSessionData(cart: Cart):ProductSelection[]{
+    // this.sendRequest<ProductSelectionData[]>('GET', this.sessionUrl)
+    //             .subscribe(response=>{
+    //               this.productSelections = response.map(psd=>new ProductSelection(cart, psd.productId, psd.price, psd.name, psd.quantity));
+    //             });
+    let selections = JSON.parse(window.localStorage.getItem(this.PRD_SEL_STR)) as ProductSelectionData[];
+    if (selections) {
+      return selections.map(s=>new ProductSelection(cart, s.productId, s.price, s.name, s.quantity));
+    }
+    return null;
   }
 
+  getOrders(){
+    this.sendRequest<Order[]>('GET', this.orderUrl)
+        .subscribe(data => this.orders=data);
+  }
+
+  createOrder(order: Order):void{
+    this.sendRequest<any>('POST', this.orderUrl, {
+      name: order.name,
+      address: order.address,
+      payment: order.payment,
+      products: order.products
+    }).subscribe(data=>{
+        order.orderConfirmation = data;
+        order.cart.clear();
+        order.clear();
+    });
+  }
+
+  shipOrder(order: Order):void{
+    this.sendRequest<any>('POST', `${this.orderUrl}/${order.orderId}`)
+        .subscribe(r=> this.getOrders());
+  }
 }
 
 interface ProductData{

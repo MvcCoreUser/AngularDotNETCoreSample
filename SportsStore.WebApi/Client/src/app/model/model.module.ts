@@ -2,8 +2,9 @@ import { Cart } from './cart.model';
 
 //import { StaticDataSource } from './static.datasource';
 import { RepositoryModel } from './repository.model';
-import { NgModule, InjectionToken } from "@angular/core";
+import { NgModule } from "@angular/core";
 import { HttpClientModule, HttpClientJsonpModule } from "@angular/common/http";
+import { Order } from './order.model';
 
 
 
@@ -11,7 +12,9 @@ import { HttpClientModule, HttpClientJsonpModule } from "@angular/common/http";
   imports:[HttpClientModule, HttpClientJsonpModule],
   providers: [
     RepositoryModel,
-    Cart
+    Cart,
+    Order
+
   ]
 })
 export class RepositoryModelModule{}

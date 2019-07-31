@@ -5,13 +5,13 @@ import { ProductSelection } from './productSelection.model';
 
 @Injectable()
 export class Cart{
-  selections: ProductSelection[]=[];
+  selections: ProductSelection[];
   itemCount: number =0;
   totalPrice: number = 0;
 
   constructor(private repo: RepositoryModel){
-    this.repo.getSessionData(this);
-    this.selections=this.repo.productSelections;
+    this.selections=this.repo.getSessionData(this) || new Array<ProductSelection>();
+    this.update(false);
   }
 
   addProduct(product:Product){
