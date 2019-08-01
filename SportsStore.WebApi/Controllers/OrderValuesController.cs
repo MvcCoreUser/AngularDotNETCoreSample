@@ -68,6 +68,7 @@ namespace SportsStore.WebApi.Controllers
             return BadRequest(ModelState);
         }
 
+        [NonAction]
         private void ProcessPayment(Payment payment)
         {
             payment.AuthCode = "12345";
@@ -79,7 +80,7 @@ namespace SportsStore.WebApi.Controllers
             IEnumerable<long> ids = lines.Select(l => l.ProductId);
             return context.Products
                           .Where(p => ids.Contains(p.ProductId))
-                          .Select(p => lines.FirstOrDefault(l => l.ProductId.Equals(p.ProductId)).Quantity * p.Price)
+                          .Select(p => lines.First(l => l.ProductId.Equals(p.ProductId)).Quantity * p.Price)
                           .Sum();
         }
     }
