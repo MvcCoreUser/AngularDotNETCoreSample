@@ -10,7 +10,7 @@ export class Cart{
   totalPrice: number = 0;
 
   constructor(private repo: RepositoryModel){
-    this.selections=this.repo.getSessionData(this) || new Array<ProductSelection>();
+    this.selections=this.repo.getSessionDataForProductSelections(this) || new Array<ProductSelection>();
     this.update(false);
   }
 
@@ -30,7 +30,7 @@ export class Cart{
     this.totalPrice = this.selections.map(ps=>ps.price*ps.quantity).reduce((p, c)=>p+c, 0);
 
     if (setData) {
-      this.repo.setSessionData(this.selections);
+      this.repo.setSessionDataForProductSelections(this.selections);
     }
   }
 

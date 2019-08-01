@@ -1,4 +1,4 @@
-import { Order } from './order.model';
+import { Order, CheckoutData } from './order.model';
 import { ProductSelection, ProductSelectionData } from './productSelection.model';
 
 import { Supplier } from './supplier.model';
@@ -22,7 +22,8 @@ export class RepositoryModel {
   private sessionUrl: string;
   private orderUrl: string;
   private paginationObject: Pagination=new Pagination();
-  private PRD_SEL_STR:string="productSelections";
+  private PRD_SEL_STR:string='productSelections';
+  private ORD_STR: string = 'checkout';
 
   suppliers: Supplier[]=[];
   categories: string[]=[];
@@ -161,28 +162,42 @@ export class RepositoryModel {
         });
   }
 
-  setSessionData(data: ProductSelection[]){
-  //   return this.sendRequest<any>('POST', this.sessionUrl,  data.map(s => {
-  //     return {
-  //         productId: s.productId, name: s.name,
-  //         price: s.price, quantity: s.quantity
-  //     }
-  // }))
-  //              .subscribe(response=>{console.log(response)});
+  setSessionDataForProductSelections(data: ProductSelection[]){
     let jsonData=data.map(s => s.getData());
     window.localStorage.setItem(this.PRD_SEL_STR, JSON.stringify(jsonData));
   }
 
-  getSessionData(cart: Cart):ProductSelection[]{
-    // this.sendRequest<ProductSelectionData[]>('GET', this.sessionUrl)
-    //             .subscribe(response=>{
-    //               this.productSelections = response.map(psd=>new ProductSelection(cart, psd.productId, psd.price, psd.name, psd.quantity));
-    //             });
+  getSessionDataForProductSelections(cart: Cart):ProductSelection[]{
     let selections = JSON.parse(window.localStorage.getItem(this.PRD_SEL_STR)) as ProductSelectionData[];
     if (selections) {
       return selections.map(s=>new ProductSelection(cart, s.productId, s.price, s.name, s.quantity));
     }
     return null;
+  }
+
+  setSessionDataForOrder(order: Order):void{
+    let jsonData: CheckoutData = {
+      name: order.name,
+      address: order.address,
+      cardCode: order.payment.cardCode,
+      cardExpiry: order.payment.cardExpiry,
+      cardNumber: order.payment.cardNumber
+    };
+    window.localStorage.setItem(this.ORD_STR, JSON.stringify(jsonData));
+  }
+
+  getSessionDataForOrder(order: Order):Order{
+    let checkoutData: CheckoutData = JSON.parse(window.localStorage.getItem(this.ORD_STR)) as CheckoutData;
+    if (checkoutData!=null) {
+      order.name=checkoutData.name;
+      order.address = checkoutData.address;
+      order.payment.cardNumber = checkoutData.cardNumber;
+      order.payment.cardCode = checkoutData.cardCode;
+      order.payment.cardExpiry = checkoutData.cardExpiry;
+    }
+
+
+    return order;
   }
 
   getOrders(){
