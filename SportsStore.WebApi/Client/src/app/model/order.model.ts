@@ -38,7 +38,7 @@ export class Order{
 export class Payment {
     cardNumber: string;
     cardExpiry: string;
-    cardSecurityCode: string;
+    cardCode: string;
 }
 export class CartLine {
     constructor(private productId: number,
