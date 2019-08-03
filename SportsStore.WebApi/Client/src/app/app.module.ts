@@ -1,3 +1,4 @@
+import { AdminModule } from './admin/admin.module';
 import { StoreModule } from './store/store.module';
 // import { ProductDetailComponent } from './core/structure/productDetail.component';
 // import { CategoryFilterComponent } from './core/structure/categoryFilter.component';
@@ -21,7 +22,8 @@ const restUrl=`http://${window.location.hostname}:5000/api/`;
     AppRoutingModule,
     RepositoryModelModule,
     CoreModule,
-    StoreModule
+    StoreModule,
+    AdminModule
   ],
   providers: [
     {provide: 'REST_URL', useValue: restUrl}
