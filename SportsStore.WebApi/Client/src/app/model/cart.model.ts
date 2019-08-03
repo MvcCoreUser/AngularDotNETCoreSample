@@ -1,4 +1,4 @@
-import { RepositoryModel } from './repository.model';
+import { Repository } from './repository.model';
 import { Product } from './product.model';
 import { Injectable } from '@angular/core';
 import { ProductSelection } from './productSelection.model';
@@ -9,7 +9,7 @@ export class Cart{
   itemCount: number =0;
   totalPrice: number = 0;
 
-  constructor(private repo: RepositoryModel){
+  constructor(private repo: Repository){
     this.selections=this.repo.getSessionDataForProductSelections(this) || new Array<ProductSelection>();
     this.update(false);
   }

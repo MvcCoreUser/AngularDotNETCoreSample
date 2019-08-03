@@ -1,11 +1,11 @@
 import { Cart } from './cart.model';
-import { RepositoryModel } from './repository.model';
+import { Repository } from './repository.model';
 import { Injectable } from "@angular/core";
 import { Router, NavigationStart } from '@angular/router';
 
 @Injectable()
 export class Order{
-  constructor(private repo: RepositoryModel, public cart: Cart, private router: Router){
+  constructor(private repo: Repository, public cart: Cart, private router: Router){
 
     router.events.subscribe(event=>{
       if (event instanceof NavigationStart) {

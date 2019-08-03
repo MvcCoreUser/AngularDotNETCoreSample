@@ -1,5 +1,5 @@
 import { Product } from './../../model/product.model';
-import { RepositoryModel } from './../../model/repository.model';
+import { Repository } from './../../model/repository.model';
 import { Component } from "@angular/core";
 import { Router } from '@angular/router';
 
@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 })
 export class ProductTableComponent{
 
-  constructor(private repo: RepositoryModel, private router: Router){
+  constructor(private repo: Repository, private router: Router){
   }
 
   get products(): Product[]{

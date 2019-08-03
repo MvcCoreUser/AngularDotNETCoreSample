@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { RepositoryModel } from '../model/repository.model';
+import { Repository } from '../model/repository.model';
 
 @Component({
   selector: 'store-pagination',
   templateUrl: 'pagination.component.html'
 })
 export class PaginationComponent{
-  constructor(private repo: RepositoryModel){}
+  constructor(private repo: Repository){}
 
   get current(): number{
     return this.repo.pagination.currentPage;

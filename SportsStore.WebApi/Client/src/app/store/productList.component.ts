@@ -1,6 +1,6 @@
 import { Cart } from './../model/cart.model';
 import { Product } from './../model/product.model';
-import { RepositoryModel } from './../model/repository.model';
+import { Repository } from './../model/repository.model';
 import { Component } from "@angular/core";
 
 @Component({
@@ -8,7 +8,7 @@ import { Component } from "@angular/core";
   templateUrl: 'productList.component.html'
 })
 export class ProductListComponent {
-  constructor(private repo: RepositoryModel, private cart: Cart) {}
+  constructor(private repo: Repository, private cart: Cart) {}
 
 
   get products(): Product[]{

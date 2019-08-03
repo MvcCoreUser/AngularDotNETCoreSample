@@ -1,14 +1,14 @@
 import { Supplier } from './../model/supplier.model';
 import { Product } from './../model/product.model';
 import { Component } from '@angular/core';
-import { RepositoryModel } from '../model/repository.model';
+import { Repository } from '../model/repository.model';
 
 @Component({
   selector: 'admin-product-editor',
   templateUrl: 'productEditor.component.html'
 })
 export class ProductEditorComponent{
-  constructor(private repo: RepositoryModel){}
+  constructor(private repo: Repository){}
 
   get product():Product{
     return this.repo.product;

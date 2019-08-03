@@ -1,4 +1,4 @@
-import { RepositoryModel } from './../../model/repository.model';
+import { Repository } from './../../model/repository.model';
 import { Product } from './../../model/product.model';
 import { Component, Inject} from '@angular/core';
 
@@ -9,7 +9,7 @@ import { Component, Inject} from '@angular/core';
 })
 export class HomeComponent {
   title = 'Angular & ASP.NET Core MVC';
-  constructor(private repository: RepositoryModel ) {
+  constructor(private repository: Repository ) {
   }
 
   getProduct(id:number):Product{

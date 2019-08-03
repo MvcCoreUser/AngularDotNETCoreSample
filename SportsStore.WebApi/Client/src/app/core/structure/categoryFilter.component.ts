@@ -1,4 +1,4 @@
-import { RepositoryModel } from './../../model/repository.model';
+import { Repository } from './../../model/repository.model';
 import { Component } from "@angular/core";
 
 @Component({
@@ -8,7 +8,7 @@ import { Component } from "@angular/core";
 export class CategoryFilterComponent{
   public chessCategory:string = 'chess';
 
-  constructor(private repo: RepositoryModel){
+  constructor(private repo: Repository){
   }
 
   setCategory(category: string){

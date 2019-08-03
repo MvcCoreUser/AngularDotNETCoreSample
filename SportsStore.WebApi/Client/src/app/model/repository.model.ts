@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { Cart } from './cart.model';
 
 @Injectable()
-export class RepositoryModel {
+export class Repository {
   products: Product[]=new Array<Product>();
   product: Product=new Product();
   private locator = (p: Product, id: number)=> p.productId == id;

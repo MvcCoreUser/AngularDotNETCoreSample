@@ -1,6 +1,6 @@
 import { Supplier } from './model/supplier.model';
 import { Product } from './model/product.model';
-import { RepositoryModel } from './model/repository.model';
+import { Repository } from './model/repository.model';
 import { Component } from '@angular/core';
 
 @Component({
@@ -11,7 +11,7 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'Client';
   loading: string='Loading data..';
-  constructor(private repo: RepositoryModel){
+  constructor(private repo: Repository){
   }
 
   get product(): Product{
