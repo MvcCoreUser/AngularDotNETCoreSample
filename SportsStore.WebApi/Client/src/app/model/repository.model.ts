@@ -6,10 +6,12 @@ import { Supplier } from './supplier.model';
 import { Product } from './product.model';
 import { Injectable, InjectionToken, Inject } from "@angular/core";
 import { isNullOrUndefined } from 'util';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError, delay } from 'rxjs/operators';
 import { Filter, Pagination } from "./configClasses.repository";
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Cart } from './cart.model';
+import { ValidationError } from '../errorHandler.service';
 
 @Injectable()
 export class Repository {
@@ -39,9 +41,27 @@ export class Repository {
   }
 
   private sendRequest<T>(method: string, url: string, data?: any):Observable<T>{
-    return this.httpClient.request<T>(method, url, {body: data});
+    return this.httpClient.request<T>(method, url, {body: data})
+                          .pipe(catchError(this.handleError));
   }
 
+  private handleError(errorResponse: HttpErrorResponse) {
+    if (errorResponse.error instanceof ErrorEvent) {
+      // A client-side or network error occurred. Handle it accordingly.
+      return throwError(new Error('Network error'));
+    } else {
+      // The backend returned an unsuccessful response code.
+      let errors: string[]=[];
+      let values =  Object.values(errorResponse.error.errors) as string[][];
+      for(let i=0; i<values.length; i++){
+          let valueArr= values[i];
+          for(let j=0; j<valueArr.length; j++){
+            errors.push(valueArr[j]);
+          }
+      }
+      return throwError(new ValidationError(errors));
+    }
+  }
 
   get filter():Filter{
     return this.filterObj;

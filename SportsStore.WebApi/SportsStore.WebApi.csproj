@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Client\.vscode\**" />
+    <Content Remove="Client\.vscode\**" />
+    <EmbeddedResource Remove="Client\.vscode\**" />
+    <None Remove="Client\.vscode\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Community.Microsoft.Extensions.Caching.PostgreSql" Version="1.0.30" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.OData" Version="7.1.0" />
