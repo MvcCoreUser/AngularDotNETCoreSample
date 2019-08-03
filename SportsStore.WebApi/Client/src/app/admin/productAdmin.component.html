@@ -18,7 +18,7 @@
           <td>{{p.category}}</td>
           <td>{{p.category}}</td>
           <td>{{p.supplier?.name || '(None)'}}</td>
-          <td>{{p.price | currency:'USD':true}}</td>
+          <td>{{p.price | currency:'USD':'true'}}</td>
           <td>
             <button class="btn btn-sm btn-primary" (click)="selectProduct(p.productId)">
               Edit

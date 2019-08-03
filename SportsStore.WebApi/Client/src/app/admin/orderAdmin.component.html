@@ -1,3 +1,30 @@
-<h4 class="text-center m-2">
-  Order Admin Placeholder
-</h4>
+<table class="table table-striped" *ngIf="orders?.length>0; else nodata">
+  <tr>
+    <th>Customer</th>
+    <th>Address</th>
+    <th>Products</th>
+    <th>Total</th>
+    <th></th>
+  </tr>
+  <tr *ngFor="let o of orders">
+    <td>{{o.name}}</td>
+    <td>{{o.address}}</td>
+    <td>{{o.products.length}}</td>
+    <td>{{o?.cart?.totalPrice || 0 | currency:'USD':true}}</td>
+    <td>
+      <button class="btn btn-sm btn-primary" (click)="markShipped(o)">
+        Ship
+      </button>
+    </td>
+  </tr>
+</table>
+
+<ng-template #shipped>
+  <td>Shipped</td>
+</ng-template>
+
+<ng-template #nodata>
+  <h3 class="text-center">
+    There are no orders
+  </h3>
+</ng-template>
