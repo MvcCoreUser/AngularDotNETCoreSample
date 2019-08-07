@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Community.Microsoft.Extensions.Caching.PostgreSql;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -28,6 +29,14 @@ namespace SportsStore.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<IdentityDataContext>(options =>
+            {
+                options.UseNpgsql(Configuration["Data:Identity:ConnectionString"]);
+            });
+
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                    .AddEntityFrameworkStores<IdentityDataContext>();
+
             services.AddDbContext<DataContext>(options =>
             {
                 options.UseNpgsql(Configuration["Data:Products:ConnectionString"]);
@@ -70,12 +79,14 @@ namespace SportsStore.WebApi
             }
             //app.UseCors(builder => builder.WithOrigins(Configuration["ClientUrl"]).AllowAnyMethod().AllowCredentials().AllowAnyHeader());
             app.UseSession();
+            app.UseAuthentication();
             app.UseCors("default");
             app.UseMvcWithDefaultRoute();
             using (var scope = app.ApplicationServices.CreateScope())
             {
                 SeedData.SeedDatabase(scope.ServiceProvider.GetRequiredService<DataContext>());
             }
+            IdentitySeedData.SeedDatabase(app);
             
         }
     }
