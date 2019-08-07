@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,18 +16,14 @@ namespace SportsStore.WebApi.Models
         private const string adminPassword = "MySecret123$";
         private const string adminRole = "Administrator";
 
-        private static T GetAppService<T>(IApplicationBuilder app)
+        
+
+        public static async Task SeedDatabase(IServiceProvider serviceProvider)
         {
-            return app.ApplicationServices.GetRequiredService<T>();
-        }
+            serviceProvider.GetRequiredService<IdentityDataContext>().Database.Migrate();
+            UserManager<IdentityUser> userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
-        public static async void SeedDatabase(IApplicationBuilder app)
-        {
-            GetAppService<IdentityDataContext>(app).Database.Migrate();
-
-            UserManager<IdentityUser> userManager = GetAppService<UserManager<IdentityUser>>(app);
-
-            RoleManager<IdentityRole> roleManager = GetAppService<RoleManager<IdentityRole>>(app);
+            RoleManager<IdentityRole> roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
             IdentityRole role = await roleManager.FindByNameAsync(adminRole);
             IdentityUser user = await userManager.FindByNameAsync(adminUser);

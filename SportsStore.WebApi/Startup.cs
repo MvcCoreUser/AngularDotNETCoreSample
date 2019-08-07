@@ -85,8 +85,9 @@ namespace SportsStore.WebApi
             using (var scope = app.ApplicationServices.CreateScope())
             {
                 SeedData.SeedDatabase(scope.ServiceProvider.GetRequiredService<DataContext>());
+                IdentitySeedData.SeedDatabase(scope.ServiceProvider).GetAwaiter().GetResult();
             }
-            IdentitySeedData.SeedDatabase(app);
+            
             
         }
     }
