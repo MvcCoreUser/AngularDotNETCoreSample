@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ namespace SportsStore.WebApi.Controllers
 {
     [Route("api/orders")]
     [ApiController]
+    [Authorize(Roles ="Administrators")]
     public class OrderValuesController : ControllerBase
     {
         private DataContext context;
@@ -40,6 +42,7 @@ namespace SportsStore.WebApi.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public IActionResult CreateOrder([FromBody]Order order)
         {
             if (ModelState.IsValid)

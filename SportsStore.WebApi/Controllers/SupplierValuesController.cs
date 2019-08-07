@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SportsStore.WebApi.Models;
@@ -11,6 +12,7 @@ namespace SportsStore.WebApi.Controllers
 {
     [Route("api/suppliers")]
     [ApiController]
+    [Authorize(Roles ="Administrator")]
     public class SupplierValuesController : ControllerBase
     {
         private DataContext context;

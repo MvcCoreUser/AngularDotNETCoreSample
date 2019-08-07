@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,7 @@ namespace SportsStore.WebApi.Controllers
 {
     [Route("api/products")]
     [ApiController]
+    [Authorize(Roles ="Administrator")]
     public class ProductValuesController : ControllerBase
     {
         private DataContext context;
@@ -35,6 +37,7 @@ namespace SportsStore.WebApi.Controllers
         }
        
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult GetProducts([FromQuery]string category, [FromQuery]string search, [FromQuery]bool related= false, [FromQuery]bool metadata=false)
         {
             IQueryable<Product> query = context.Products;
@@ -72,12 +75,19 @@ namespace SportsStore.WebApi.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public IActionResult GetProductById([FromRoute]long id)
         {
-            var product = context.Products
-                                 .Include(p=>p.Supplier)
-                                 .Include(p=>p.Ratings)
-                                 .FirstOrDefault(p=>p.ProductId.Equals(id));
+            //var product = context.Products
+            //                     .Include(p=>p.Supplier)
+            //                     .Include(p=>p.Ratings)
+            //                     .FirstOrDefault(p=>p.ProductId.Equals(id));
+            IQueryable<Product> query = context.Products.Include(p => p.Ratings);
+            if (User.IsInRole("Administrator"))
+            {
+                query = query.Include(p => p.Supplier).ThenInclude(s => s.Products);
+            }
+            Product product = query.FirstOrDefault(p => p.ProductId.Equals(id));
             if (product!=null)
             {
                 if (product.Supplier!=null)
