@@ -71,6 +71,7 @@ export class Repository {
     this.httpClient.post<HttpResponse<any>>(`${this.accountUrl}login`, loginDto).subscribe(
       response=>{
         console.log(response.body.token);
+        window.localStorage.setItem('token', response.body.token);
       }
     );
   }
