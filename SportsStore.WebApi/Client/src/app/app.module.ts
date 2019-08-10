@@ -1,3 +1,4 @@
+import { AuthModule } from './auth/auth.module';
 import { ErrorHandlerService } from './errorHandler.service';
 import { AdminModule } from './admin/admin.module';
 import { StoreModule } from './store/store.module';
@@ -30,7 +31,8 @@ export function handler(): ErrorHandlerService {
     RepositoryModelModule,
     CoreModule,
     StoreModule,
-    AdminModule
+    AdminModule,
+    AuthModule
   ],
   providers: [
     {provide: 'REST_URL', useValue: restUrl},

@@ -68,10 +68,10 @@ export class Repository {
       email: name,
       password: password
     };
-    this.httpClient.post<HttpResponse<any>>(`${this.accountUrl}login`, loginDto).subscribe(
+    this.httpClient.post<TokenData>(`${this.accountUrl}login`, loginDto).subscribe(
       response=>{
-        console.log(response.body.token);
-        window.localStorage.setItem('token', response.body.token);
+        console.log(response.token);
+        window.localStorage.setItem('token', response.token);
       }
     );
   }
@@ -289,6 +289,10 @@ interface ProductsWithMetadata{
 interface LoginDto{
   email:string;
   password: string;
+}
+
+interface TokenData{
+  token: string;
 }
 
 

@@ -1,10 +1,13 @@
 import { Injectable } from "@angular/core";
 import { Repository } from '../model/repository.model';
 import { Router } from '@angular/router';
+import { isNullOrUndefined } from 'util';
 
 @Injectable()
 export class AuthenticationService{
-  constructor(private repo: Repository, private router: Router){}
+  constructor(private repo: Repository, private router: Router){
+    this.authenticated = !isNullOrUndefined(window.localStorage.getItem('token'));
+  }
 
   authenticated: boolean = false;
   name: string;
@@ -15,7 +18,7 @@ export class AuthenticationService{
     this.authenticated = false;
     window.localStorage.removeItem('token');
     this.repo.login(this.name, this.password);
-    this.authenticated = window.localStorage.getItem('token').length>0;
+    this.authenticated = !isNullOrUndefined(window.localStorage.getItem('token'));
     return this.authenticated;
   }
 

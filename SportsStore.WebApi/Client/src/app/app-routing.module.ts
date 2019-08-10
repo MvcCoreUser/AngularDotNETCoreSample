@@ -1,3 +1,5 @@
+import { AuthenticationComponent } from './auth/authentication.component';
+import { AuthentitcationGuard } from './auth/authentucation.guard';
 import { ProductAdminComponent } from './admin/productAdmin.component';
 import { AdminComponent } from './admin/admin.component';
 import { CheckoutSummaryComponent } from './store/checkout/checkoutSummary.component';
@@ -15,8 +17,11 @@ import { OverviewComponent } from './admin/overview.component';
 // import { HomeComponent } from './core/home/home.component';
 
 const routes: Routes = [
+  {path: 'login', component: AuthenticationComponent},
+  {path: 'admin', redirectTo:'/admin/overview', pathMatch: 'full'},
   {
     path: 'admin', component: AdminComponent,
+    canActivateChild:[AuthentitcationGuard],
     children:[
       {path:'products', component: ProductAdminComponent},
       {path: 'orders', component: OrderAdminComponent},
