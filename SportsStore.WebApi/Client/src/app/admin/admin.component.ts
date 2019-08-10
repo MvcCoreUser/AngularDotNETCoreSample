@@ -1,3 +1,4 @@
+import { AuthenticationService } from './../auth/authentication.service';
 import { Component } from "@angular/core";
 import { Repository } from '../model/repository.model';
 
@@ -5,7 +6,7 @@ import { Repository } from '../model/repository.model';
   templateUrl:'admin.component.html'
 })
 export class AdminComponent{
-  constructor(private repo: Repository){
+  constructor(private repo: Repository, public authService:AuthenticationService){
     repo.filter.reset();
     repo.filter.related=true;
     this.repo.getProducts();

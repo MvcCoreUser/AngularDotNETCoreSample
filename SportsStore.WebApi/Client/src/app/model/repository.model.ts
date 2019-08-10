@@ -9,7 +9,7 @@ import { isNullOrUndefined } from 'util';
 import { Observable, throwError } from 'rxjs';
 import { catchError, delay } from 'rxjs/operators';
 import { Filter, Pagination } from "./configClasses.repository";
-import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpResponse, HttpHeaders } from '@angular/common/http';
 import { Cart } from './cart.model';
 import { ValidationError } from '../errorHandler.service';
 
@@ -26,6 +26,7 @@ export class Repository {
   private paginationObject: Pagination=new Pagination();
   private PRD_SEL_STR:string='productSelections';
   private ORD_STR: string = 'checkout';
+  private headers: HttpHeaders;
 
   suppliers: Supplier[]=[];
   categories: string[]=[];
@@ -37,11 +38,16 @@ export class Repository {
     this.supplierUrl = `${this.url}suppliers/`;
     this.orderUrl = `${this.url}orders/`;
     this.accountUrl = `${this.url}account/`;
+    this.headers=new HttpHeaders();
+    this.headers = this.headers.set('Authorization', `Bearer ${window.localStorage.getItem('token')}`);
+    this.headers = this.headers.set('Cache-Control', 'no-cache');
+    this.headers = this.headers.set('Content-Type', 'application/json');
+
     this.getProducts();
   }
 
   private sendRequest<T>(method: string, url: string, data?: any):Observable<T>{
-    return this.httpClient.request<T>(method, url, {body: data})
+    return this.httpClient.request<T>(method, url, {body: data, headers:this.headers},)
                           .pipe(catchError(this.handleError));
   }
 
@@ -63,17 +69,12 @@ export class Repository {
     }
   }
 
-  login(name:string, password: string): void{
+  login(name:string, password: string): Observable<TokenData>{
     let loginDto: LoginDto={
       email: name,
       password: password
     };
-    this.httpClient.post<TokenData>(`${this.accountUrl}login`, loginDto).subscribe(
-      response=>{
-        console.log(response.token);
-        window.localStorage.setItem('token', response.token);
-      }
-    );
+    return this.httpClient.post<TokenData>(`${this.accountUrl}login`, loginDto)
   }
 
   logout():void{

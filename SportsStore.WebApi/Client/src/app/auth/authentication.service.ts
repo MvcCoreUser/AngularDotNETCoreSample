@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { Repository } from '../model/repository.model';
 import { Router } from '@angular/router';
 import { isNullOrUndefined } from 'util';
+import { Observable, of } from 'rxjs';
 
 @Injectable()
 export class AuthenticationService{
@@ -14,12 +15,21 @@ export class AuthenticationService{
   password: string;
   callbackUrl: string;
 
-  login(): boolean{
+  login(): Promise<boolean>{
     this.authenticated = false;
     window.localStorage.removeItem('token');
-    this.repo.login(this.name, this.password);
-    this.authenticated = !isNullOrUndefined(window.localStorage.getItem('token'));
-    return this.authenticated;
+    return this.repo.login(this.name, this.password).toPromise().then(
+      response=>{
+        window.localStorage.setItem('token', response.token);
+        this.authenticated=true;
+        return true;
+      },
+      _error=>{
+        this.authenticated=false;
+        return false;
+      }
+    );
+
   }
 
   logout():void{

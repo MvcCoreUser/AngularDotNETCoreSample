@@ -14,7 +14,7 @@ namespace SportsStore.WebApi.Controllers
 {
     [Route("api/orders")]
     [ApiController]
-    [Authorize(Roles ="Administrators")]
+    [Authorize]
     public class OrderValuesController : ControllerBase
     {
         private DataContext context;

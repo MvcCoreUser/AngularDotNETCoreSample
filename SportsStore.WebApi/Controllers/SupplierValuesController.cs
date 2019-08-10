@@ -12,7 +12,7 @@ namespace SportsStore.WebApi.Controllers
 {
     [Route("api/suppliers")]
     [ApiController]
-    [Authorize(Roles ="Administrator")]
+    [Authorize]
     public class SupplierValuesController : ControllerBase
     {
         private DataContext context;

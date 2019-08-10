@@ -1,8 +1,18 @@
 
 <div class="navbar bg-info mb-1">
-  <a class="navbar-brand text-white">
-    SPORTS STORE ADMIN
-  </a>
+  <div class="row">
+    <div class="col">
+        <a class="navbar-brand text-white">
+            SPORTS STORE ADMIN
+          </a>
+    </div>
+     <div class="col text-right">
+        <button class="btn btn-sm btn-warning" (click)="authService.logout()">
+            Log Out
+        </button>
+     </div>
+  </div>
+
 </div>
 
 <div class="row no-gutters">
