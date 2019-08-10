@@ -9,7 +9,7 @@ import { isNullOrUndefined } from 'util';
 import { Observable, throwError } from 'rxjs';
 import { catchError, delay } from 'rxjs/operators';
 import { Filter, Pagination } from "./configClasses.repository";
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Cart } from './cart.model';
 import { ValidationError } from '../errorHandler.service';
 
@@ -21,8 +21,8 @@ export class Repository {
   private filterObj: Filter=new Filter();
   private productUrl: string;
   private supplierUrl: string;
-  private sessionUrl: string;
   private orderUrl: string;
+  private accountUrl: string;
   private paginationObject: Pagination=new Pagination();
   private PRD_SEL_STR:string='productSelections';
   private ORD_STR: string = 'checkout';
@@ -35,8 +35,8 @@ export class Repository {
     this.filterObj.related = true;
     this.productUrl=`${this.url}products/`;
     this.supplierUrl = `${this.url}suppliers/`;
-    this.sessionUrl = `${this.url}session/cart/`;
-    this.orderUrl = `${this.url}orders`;
+    this.orderUrl = `${this.url}orders/`;
+    this.accountUrl = `${this.url}account/`;
     this.getProducts();
   }
 
@@ -61,6 +61,22 @@ export class Repository {
       }
       return throwError(new ValidationError(errors));
     }
+  }
+
+  login(name:string, password: string): void{
+    let loginDto: LoginDto={
+      email: name,
+      password: password
+    };
+    this.httpClient.post<HttpResponse<any>>(`${this.accountUrl}login`, loginDto).subscribe(
+      response=>{
+        console.log(response.body.token);
+      }
+    );
+  }
+
+  logout():void{
+    this.httpClient.post<HttpResponse<any>>(`${this.accountUrl}logout`, null).subscribe(response=>{});
   }
 
   get filter():Filter{
@@ -239,7 +255,7 @@ export class Repository {
   }
 
   shipOrder(order: Order):void{
-    this.sendRequest<any>('POST', `${this.orderUrl}/${order.orderId}`)
+    this.sendRequest<any>('POST', `${this.orderUrl}${order.orderId}`)
         .subscribe(r=> this.getOrders());
   }
 }
@@ -267,6 +283,11 @@ interface JsonPatchItem{
 interface ProductsWithMetadata{
   data: Product[],
   categories: string[]
+}
+
+interface LoginDto{
+  email:string;
+  password: string;
 }
 
 
