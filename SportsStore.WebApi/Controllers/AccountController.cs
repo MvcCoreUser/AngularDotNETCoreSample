@@ -25,11 +25,42 @@ namespace SportsStore.WebApi.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IConfiguration _configuration;
 
-        public AccountController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, IConfiguration configuration)
+        public AccountController(SignInManager<IdentityUser> signInManager, 
+            UserManager<IdentityUser> userManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _configuration = configuration;
+            _roleManager = roleManager;
+        }
+
+        private async Task<List<Claim>> GetValidClaims(IdentityUser user)
+        {
+            IdentityOptions _options = new IdentityOptions();
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(_options.ClaimsIdentity.UserIdClaimType, user.Id.ToString()),
+                new Claim(_options.ClaimsIdentity.UserNameClaimType, user.UserName)
+            };
+            var userClaims = await _userManager.GetClaimsAsync(user);
+            var userRoles = await _userManager.GetRolesAsync(user);
+            claims.AddRange(userClaims);
+            foreach (var userRole in userRoles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, userRole));
+                var role = await _roleManager.FindByNameAsync(userRole);
+                if (role != null)
+                {
+                    var roleClaims = await _roleManager.GetClaimsAsync(role);
+                    foreach (Claim roleClaim in roleClaims)
+                    {
+                        claims.Add(roleClaim);
+                    }
+                }
+            }
+            return claims;
         }
 
         private async Task<object> GenerateJwtToken(IdentityUser user)
@@ -70,6 +101,12 @@ namespace SportsStore.WebApi.Controllers
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
+
+                var roleRes = await _userManager.AddToRoleAsync(user, "Administrator");
+                if (!roleRes.Succeeded)
+                {
+                    throw new Exception($"Cannot add user {user.UserName} to role Administrator");
+                }
                 await _signInManager.SignInAsync(user, false);
                 var token = await GenerateJwtToken(user);
                 return Ok(new { token });
